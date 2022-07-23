@@ -23,11 +23,6 @@ public class UserOtpSmsService extends SmsTemplateService {
     }
 
     @Override
-    public ProviderType type() {
-        return ProviderType.SMS;
-    }
-
-    @Override
     public SmsKeyName getKey() {
         return SmsKeyName.USER_OTP_SMS;
     }

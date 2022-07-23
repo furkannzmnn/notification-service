@@ -22,11 +22,6 @@ public class AccountDeleteSmsService extends SmsTemplateService {
     }
 
     @Override
-    public ProviderType type() {
-        return ProviderType.SMS;
-    }
-
-    @Override
     public SmsKeyName getKey() {
         return SmsKeyName.ACCOUNT_DELETE_SMS;
     }

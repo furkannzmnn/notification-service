@@ -7,5 +7,10 @@ public class EmailRequest extends BaseRequest {
     private String from;
     private String cc;
 
+    public EmailRequest(String template) {
+        this.template = template;
+    }
 
+    public EmailRequest() {
+    }
 }

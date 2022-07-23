@@ -6,6 +6,7 @@ import com.example.notificationservice.model.SmsTemplate;
 import com.example.notificationservice.service.SmsTemplateSaveService;
 import com.example.notificationservice.template.SmsTemplateResolver;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class SmsController {
         smsTemplateResolver.resolveSmsType(SmsKeyName.USER_OTP_SMS).sendSms("+84988888888", build);
     }
 
-    @PostMapping("/sms-create")
+    @GetMapping("/sms-create")
     public ResponseEntity<?> createSms() {
        return ResponseEntity.ok(smsRepository.createOrUpdate(SmsTemplate.builder()
                .keyword("firstName,lastName")
