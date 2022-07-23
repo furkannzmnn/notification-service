@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +24,6 @@ public class SmsTemplateSaveService {
 
     @Transactional
     public SmsCreateResponse<SmsTemplate> createOrUpdate(SmsTemplate request) {
-
         final SmsTemplate.Builder builder = SmsTemplate.builder();
 
 
@@ -32,6 +32,8 @@ public class SmsTemplateSaveService {
                 .map(prefix -> SEPARATOR + PREFIX_LEFT + prefix + PREFIX_RIGHT)
                 .collect(Collectors.joining());
 
+        final Optional<SmsTemplate> exits = smsRepository.findByKey(request.getKey());
+        exits.ifPresent(smsTemplate -> builder.id(smsTemplate.getId()));
 
         final SmsTemplate smsTemplate = builder
                 .description(request.getDescription())
