@@ -15,7 +15,6 @@ public class SmsTemplateSaveService {
     private static final String PREFIX_LEFT = "{";
     private static final String PREFIX_RIGHT = "}";
     private static final String SEPARATOR = "$";
-
     private final SmsRepository smsRepository;
 
     public SmsTemplateSaveService(SmsRepository smsRepository) {

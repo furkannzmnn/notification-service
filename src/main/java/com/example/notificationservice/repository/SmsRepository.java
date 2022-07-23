@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface SmsRepository extends ElasticsearchRepository<SmsTemplate, String> {
-
     Optional<SmsTemplate> findByKey(String key);
 }
