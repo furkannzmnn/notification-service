@@ -1,4 +1,4 @@
-package com.example.notificationservice.kafka;
+package com.example.notificationservice.infrastructure.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

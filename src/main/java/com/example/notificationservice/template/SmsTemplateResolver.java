@@ -15,7 +15,8 @@ public final class SmsTemplateResolver {
     }
 
     public SmsTemplateService resolveSmsType(SmsKeyName smsKeyName) {
-       return smsTemplateServices.stream()
+       return smsTemplateServices
+                .stream()
                 .filter(each -> each.support(smsKeyName))
                 .findAny()
                 .orElseThrow(RuntimeException::new);

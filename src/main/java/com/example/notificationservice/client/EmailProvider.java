@@ -8,7 +8,7 @@ public final class EmailProvider  implements NotificationProvider<EmailRequest>{
 
     @Override
     public void sendNotification(EmailRequest request) {
-        // impl
+        System.out.println("send email");
     }
 
     @Override

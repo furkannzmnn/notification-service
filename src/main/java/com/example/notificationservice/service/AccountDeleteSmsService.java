@@ -1,6 +1,5 @@
 package com.example.notificationservice.service;
 
-import com.example.notificationservice.client.ProviderType;
 import com.example.notificationservice.dto.SmsKeyName;
 import com.example.notificationservice.model.SmsTemplate;
 import com.example.notificationservice.template.SmsTemplateService;

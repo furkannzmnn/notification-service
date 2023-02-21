@@ -15,6 +15,9 @@ public final class SmsRequest extends BaseRequest {
         this.smsKey = smsKey;
     }
 
+    public SmsRequest() {
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }

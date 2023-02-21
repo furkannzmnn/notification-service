@@ -1,7 +1,7 @@
 package com.example.notificationservice.client;
 
 import com.example.notificationservice.dto.SmsRequest;
-import com.example.notificationservice.kafka.ConsumerRebalanceListenerImpl;
+import com.example.notificationservice.infrastructure.kafka.ConsumerRebalanceListenerImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;

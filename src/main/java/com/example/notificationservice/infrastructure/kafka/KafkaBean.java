@@ -1,4 +1,4 @@
-package com.example.notificationservice.kafka;
+package com.example.notificationservice.infrastructure.kafka;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;

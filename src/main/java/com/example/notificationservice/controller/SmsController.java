@@ -2,6 +2,7 @@ package com.example.notificationservice.controller;
 
 import com.example.notificationservice.dto.SmsKeyName;
 import com.example.notificationservice.dto.SmsTemplateSort;
+import com.example.notificationservice.infrastructure.logging.Logger;
 import com.example.notificationservice.model.SmsTemplate;
 import com.example.notificationservice.service.SmsTemplateSaveService;
 import com.example.notificationservice.template.SmsTemplateResolver;
@@ -18,22 +19,23 @@ import java.util.Map;
 public class SmsController {
 
     private final SmsTemplateResolver smsTemplateResolver;
-    private final SmsTemplateSaveService smsRepository;
+    private final SmsTemplateSaveService smsTemplateSaveService;
 
-    public SmsController(SmsTemplateResolver smsTemplateResolver, SmsTemplateSaveService smsRepository) {
+    public SmsController(SmsTemplateResolver smsTemplateResolver, SmsTemplateSaveService smsTemplateSaveService) {
         this.smsTemplateResolver = smsTemplateResolver;
-        this.smsRepository = smsRepository;
+        this.smsTemplateSaveService = smsTemplateSaveService;
     }
 
-    @RequestMapping("/sms")
-    public void sendSms() {
+    @PostMapping("/sms")
+    public void sendSms(SmsKeyName smsKeyName) {
         final Map<String, Object> build = new SmsTemplateSort().firstName("John").lastName("Doe").build();
-        smsTemplateResolver.resolveSmsType(SmsKeyName.USER_OTP_SMS).sendSms("+84988888888", build);
+        smsTemplateResolver.resolveSmsType(SmsKeyName.ACCOUNT_DELETE_SMS).sendSms("+84988888888", build);
     }
 
     @GetMapping("/sms-create")
+    @Logger(value = "BAŞARILI CREATE SMS", showData = true)
     public ResponseEntity<?> createSms() {
-       return ResponseEntity.ok(smsRepository.createOrUpdate(SmsTemplate.builder()
+       return ResponseEntity.ok(smsTemplateSaveService.createOrUpdate(SmsTemplate.builder()
                .keyword("firstName,lastName")
                .description("Hello ${firstName} ${lastName}")
                .key(SmsKeyName.USER_OTP_SMS.name())

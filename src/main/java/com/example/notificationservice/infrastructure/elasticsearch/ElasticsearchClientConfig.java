@@ -1,5 +1,5 @@
 
-package com.example.notificationservice.elasticSearch;
+package com.example.notificationservice.infrastructure.elasticsearch;
 
 
 import org.elasticsearch.client.RestHighLevelClient;
@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
+import reactor.util.annotation.NonNullApi;
 
 @Configuration
 public class ElasticsearchClientConfig extends AbstractElasticsearchConfiguration {
-
 
     @Override
     @Bean

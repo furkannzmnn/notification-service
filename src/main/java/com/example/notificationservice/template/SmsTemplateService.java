@@ -4,6 +4,7 @@ import com.example.notificationservice.client.NotificationProviderFactory;
 import com.example.notificationservice.client.ProviderType;
 import com.example.notificationservice.dto.SmsKeyName;
 import com.example.notificationservice.dto.SmsRequest;
+import com.example.notificationservice.infrastructure.logging.Logger;
 import com.example.notificationservice.repository.SmsRepository;
 import com.floreysoft.jmte.Engine;
 import org.springframework.beans.factory.annotation.Autowired;

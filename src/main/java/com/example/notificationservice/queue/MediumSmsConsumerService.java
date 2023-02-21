@@ -18,7 +18,7 @@ public class MediumSmsConsumerService {
         this.objectMapper = objectMapper;
     }
 
-    @KafkaListener(topics = "notification-sms-medium")
+    @KafkaListener(topics = "notification-sms-medium", groupId = "group_id")
     public void sendSms(String message) throws JsonProcessingException {
         final SmsRequest smsRequest = objectMapper.readValue(message, SmsRequest.class);
         LOGGER.info(smsRequest.getSmsDesc()); // sending sms
