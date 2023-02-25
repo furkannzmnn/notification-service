@@ -1,0 +1,29 @@
+GET http://localhost:9200/sms_template/_search
+Content-Type: application/json
+
+{
+  "query" : {
+    "match_all" : {}
+  }
+}
+
+###
+
+GET http://localhost:9200/new_logs/_search
+Content-Type: application/json
+
+{
+"query" : {
+"match_all" : {}
+  }
+}
+
+###
+GET http://localhost:9200/logs/_search
+Content-Type: application/json
+
+{
+"query" : {
+"match_all" : {}
+}
+}

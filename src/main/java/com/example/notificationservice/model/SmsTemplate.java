@@ -1,13 +1,16 @@
 package com.example.notificationservice.model;
 
+import com.example.notificationservice.infrastructure.logging.Logger;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 @Document(indexName = "sms_template")
 public class SmsTemplate {
-
     private String id;
+    @Logger(value = "KEY", showData = true)
     private String key;
+    @Logger(value = "DESCRIPTION", showData = true)
     private String description;
+    @Logger(value = "KEYWORD", showData = true)
     private String keyword;
     private String targetClient;
 
@@ -69,6 +72,10 @@ public class SmsTemplate {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public static <R> void add(R r, SmsTemplate smsTemplate) {
+
     }
 
     public static final class Builder {

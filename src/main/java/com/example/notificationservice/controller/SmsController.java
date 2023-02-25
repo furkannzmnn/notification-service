@@ -33,7 +33,6 @@ public class SmsController {
     }
 
     @GetMapping("/sms-create")
-    @Logger(value = "BAŞARILI CREATE SMS", showData = true)
     public ResponseEntity<?> createSms() {
        return ResponseEntity.ok(smsTemplateSaveService.createOrUpdate(SmsTemplate.builder()
                .keyword("firstName,lastName")

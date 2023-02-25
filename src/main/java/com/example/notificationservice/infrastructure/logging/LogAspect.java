@@ -1,42 +1,69 @@
 package com.example.notificationservice.infrastructure.logging;
 
+import com.example.notificationservice.infrastructure.elasticsearch.ElasticLoggerService;
+import com.example.notificationservice.model.Log;
+import com.example.notificationservice.repository.LogRepository;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+
+import static com.example.notificationservice.infrastructure.elasticsearch.ElasticLoggerService.initTimestamp;
 
 @Aspect
 @Component
 public class LogAspect {
-    static java.util.logging.Logger logger = java.util.logging.Logger.getLogger("Aspect Logger");
 
-    @AfterReturning(pointcut = "@annotation(com.example.notificationservice.infrastructure.logging.Logger)", returning = "object")
-    private static void log(JoinPoint joinPoint, Object object) throws IllegalAccessException {
+    private final LogRepository logRepository;
+
+    public LogAspect(LogRepository logRepository) {
+        this.logRepository = logRepository;
+    }
+
+    @Around(value = "@annotation(com.example.notificationservice.infrastructure.logging.Logger)")
+    public void log(ProceedingJoinPoint joinPoint) throws IllegalAccessException, IOException {
         String methodMessage = getMethodMessage(joinPoint);
-        Class<?> objectClass = object.getClass();
         Map<String, String> logElements = new HashMap<>();
         Set<String> displayFields = new HashSet<>();
-        for (Field field : objectClass.getDeclaredFields()) {
+
+        for (Field field : joinPoint.getArgs()[0].getClass().getDeclaredFields()) {
             field.setAccessible(true);
             if (field.isAnnotationPresent(Logger.class)) {
-                if (checkIsShowDataEnabled(field)) {
-                    logElements.put(getFieldValue(field), String.valueOf(field.get(object)));
-                } else {
-                    displayFields.add(getFieldValue(field));
+                Logger fieldLogger = field.getAnnotation(Logger.class);
+                if (checkIsShowDataEnabled(fieldLogger)) {
+                    displayFields.add(field.getName());
                 }
+                logElements.put(getFieldValue(field), field.get(joinPoint.getArgs()[0]).toString());
             }
         }
-        logger.info("method message: " + methodMessage);
-        logger.info("displayed fields: " + String.join(", ", displayFields));
-        logger.info("displayed fields with data: " + logElements.toString());
+
+        String returnJsonData = joinPoint.getArgs()[0].toString();
+        String timestamp = initTimestamp();
+
+
+        List<Log> logs = new ArrayList<>();
+
+        CompletableFuture.runAsync(() -> {
+            String log = String.format("%s %s %s %s", timestamp, methodMessage, logElements, returnJsonData) + new Random().nextInt();
+            logs.add(new Log(log));
+            logRepository.saveAll(logs);
+        });
+
+    }
+
+    @After("@annotation(com.example.notificationservice.infrastructure.logging.Logger)")
+    // log after method execution
+    public void logAfter(JoinPoint joinPoint) throws IOException {
+        String methodMessage = getMethodMessage(joinPoint);
+        String returnJsonData = joinPoint.getArgs()[0].toString();
+
     }
 
     private static String getMethodMessage(JoinPoint joinPoint) {
@@ -51,7 +78,7 @@ public class LogAspect {
         return fieldValue.isEmpty() ? field.getName() : fieldValue;
     }
 
-    private static boolean checkIsShowDataEnabled(Field field) {
-        return field.getAnnotation(Logger.class).showData();
+    private static boolean checkIsShowDataEnabled(Logger field) {
+        return field.showData();
     }
 }

@@ -1,7 +1,6 @@
 package com.example.notificationservice.client;
 
 import com.example.notificationservice.dto.BaseRequest;
-import org.quartz.core.QuartzScheduler;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

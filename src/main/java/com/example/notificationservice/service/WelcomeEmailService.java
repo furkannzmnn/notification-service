@@ -13,7 +13,7 @@ public class WelcomeEmailService extends EmailTemplateService {
 
     @Override
     public EmailKeyName getKey() {
-        return null;
+        return EmailKeyName.WELCOME_EMAIL;
     }
 
     @Override

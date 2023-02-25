@@ -1,5 +1,6 @@
 package com.example.notificationservice.service;
 
+import com.example.notificationservice.infrastructure.logging.Logger;
 import com.example.notificationservice.model.SmsTemplate;
 import com.example.notificationservice.repository.SmsRepository;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class SmsTemplateSaveService {
     }
 
     @Transactional
+    @Logger(value = "BAŞARILI CREATE SMS", showData = true)
     public SmsCreateResponse<SmsTemplate> createOrUpdate(SmsTemplate request) {
         final SmsTemplate.Builder builder = SmsTemplate.builder();
 

@@ -15,6 +15,6 @@ public class EmailCommonNotification implements CommonNotificationService<EmailR
 
     @Override
     public PriorityType priorityNotification(PriorityType priorityType) {
-        return null;
+        return priorityType;
     }
 }
