@@ -2,8 +2,8 @@ GET http://localhost:9200/sms_template/_search
 Content-Type: application/json
 
 {
-  "query" : {
-    "match_all" : {}
+  "query": {
+    "match_all": {}
   }
 }
 
@@ -13,8 +13,8 @@ GET http://localhost:9200/new_logs/_search
 Content-Type: application/json
 
 {
-"query" : {
-"match_all" : {}
+  "query": {
+    "match_all": {}
   }
 }
 
@@ -23,7 +23,92 @@ GET http://localhost:9200/logs/_search
 Content-Type: application/json
 
 {
-"query" : {
-"match_all" : {}
+  "query": {
+    "match": {
+      "message": "2023-02-22T14:21:36.230"
+    }
+  }
 }
+
+###
+
+GET http://localhost:9200/logs/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {"message": "SMS"}},
+        {"match": {"message": "2023-02-22T14:21:36.230"}}
+      ]
+    }
+  }
 }
+
+###
+
+GET http://localhost:9200/logs/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "range": {
+      "message": {
+        "gte": "10",
+        "lte": "20"
+      }
+    }
+    }
+}
+
+###
+GET http://localhost:9200/sms_template/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+###
+
+GET http://localhost:9200/sms_template/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {"key": "USER_OTP_SMS"}}
+      ],
+        "must_not": [
+            {"match": {"key": "ACCOUNT_DELETE_SMS"}}
+        ]
+    }
+  }
+}
+
+###
+
+// or query
+GET http://localhost:9200/sms_template/_search
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "should": [
+        {"match": {"key": "USER_OTP_SMS"}},
+        {"match": {"key": "ACCOUNT_DELETE_SMS"}}
+      ],
+        "minimum_should_match": 1,
+        "boost": 1.0
+    }
+  }
+}
+
+###
+
+

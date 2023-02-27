@@ -23,7 +23,6 @@ public class SmsTemplateSaveService {
     }
 
     @Transactional
-    @Logger(value = "BAŞARILI CREATE SMS", showData = true)
     public SmsCreateResponse<SmsTemplate> createOrUpdate(SmsTemplate request) {
         final SmsTemplate.Builder builder = SmsTemplate.builder();
 

@@ -27,17 +27,18 @@ public class SmsController {
     }
 
     @PostMapping("/sms")
-    public void sendSms(SmsKeyName smsKeyName) {
+    public void sendSms() {
         final Map<String, Object> build = new SmsTemplateSort().firstName("John").lastName("Doe").build();
-        smsTemplateResolver.resolveSmsType(SmsKeyName.ACCOUNT_DELETE_SMS).sendSms("+84988888888", build);
+        smsTemplateResolver.resolveSmsType(SmsKeyName.USER_OTP_SMS).sendSms("+84988888888", build);
     }
 
     @GetMapping("/sms-create")
     public ResponseEntity<?> createSms() {
-       return ResponseEntity.ok(smsTemplateSaveService.createOrUpdate(SmsTemplate.builder()
-               .keyword("firstName,lastName")
-               .description("Hello ${firstName} ${lastName}")
-               .key(SmsKeyName.USER_OTP_SMS.name())
-               .build()));
+        return ResponseEntity.ok(smsTemplateSaveService.createOrUpdate(SmsTemplate.builder()
+                .keyword("firstName,lastName")
+                .description("Hello ${firstName} ${lastName}")
+                .key(SmsKeyName.ACCOUNT_DELETE_SMS.name())
+                .targetClient("SMS")
+                .build()));
     }
 }

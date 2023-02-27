@@ -41,7 +41,6 @@ public class MediumSmsQueue implements SmsPriorityService {
                             (failure) -> LOGGER.error("SMS notification failed to send to queue : {}", request.getPhoneNumber()));
 
             consumerRebalanceListener.addOffSetTopic("notification-sms-medium",0,0);
-            final Map<TopicPartition, OffsetAndMetadata> currentOffsets = consumerRebalanceListener.getCurrentOffsets();
         } catch (JsonProcessingException e) {
             LOGGER.error("Error while sending SMS notification to queue : {}", e.getMessage());
         }

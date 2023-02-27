@@ -55,7 +55,6 @@ public class LogAspect {
             logs.add(new Log(log));
             logRepository.saveAll(logs);
         });
-
     }
 
     @After("@annotation(com.example.notificationservice.infrastructure.logging.Logger)")

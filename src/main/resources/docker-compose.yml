@@ -30,6 +30,7 @@ services:
       - max_open_files=65536
       - max_content_length_in_bytes=100000000
       - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
 
     volumes:
         - ./data:/usr/share/elasticsearch/data

@@ -75,7 +75,7 @@ public class SmsTemplate {
     }
 
     public static <R> void add(R r, SmsTemplate smsTemplate) {
-
+        smsTemplate.setId(r.toString());
     }
 
     public static final class Builder {

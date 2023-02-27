@@ -1,5 +1,6 @@
 package com.example.notificationservice.infrastructure.elasticsearch;
 
+import org.apache.kafka.common.protocol.types.Field;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -13,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Component
-public class ElasticLoggerService {
+public class ElasticLoggerService implements ElasticLogger {
 
     private final RestHighLevelClient elasticsearchClient;
 
@@ -21,7 +22,7 @@ public class ElasticLoggerService {
         this.elasticsearchClient = elasticClient.getElasticSearchClient();
     }
 
-    public void insert(String log) throws IOException {
+    public void insert(String log, String index) throws IOException {
         String timestamp = initTimestamp();
 
         XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -33,7 +34,7 @@ public class ElasticLoggerService {
         }
         builder.endObject();
 
-        IndexRequest request = new IndexRequest("logs");
+        IndexRequest request = new IndexRequest(index);
         request.source(builder);
         elasticsearchClient.index(request, RequestOptions.DEFAULT);
     }
@@ -44,21 +45,30 @@ public class ElasticLoggerService {
         return now.format(formatter);
     }
 
-    public void insertBulk(Map<String, ?> logs) {
+    public void insertBulk(Map<String, ?> logs, String index) {
         try {
             XContentBuilder builder = XContentFactory.jsonBuilder();
 
             {
                 builder.map(logs);
             }
-            IndexRequest request = new IndexRequest("new_logs");
+            IndexRequest request = new IndexRequest(index);
             request.source(builder);
             elasticsearchClient.index(request, RequestOptions.DEFAULT);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
+
+    @Override
+    public void log(String data, String index) throws RuntimeException, IOException {
+        insert(data, index);
+    }
+
+    @Override
+    public void log(Map<String, ?> data, String index) {
+        insertBulk(data, index);
+    }
+
 }
