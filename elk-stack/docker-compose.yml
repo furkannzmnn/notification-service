@@ -1,0 +1,153 @@
+version: '3'
+services:
+  filebeat:
+    image: filebeat
+    build:
+      #/Users/furkanozmen/Desktop/side-projects/notification-service/elk-stack/filebeat
+      context: /Users/furkanozmen/Desktop/side-projects/notification-service/elk-stack/filebeat
+      dockerfile: Dockerfile
+
+    networks:
+      - my-network
+    volumes:
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $HOME/app:/var/app
+
+
+  logstash:
+    image: logstash
+    build:
+      context: /Users/furkanozmen/Desktop/side-projects/notification-service/elk-stack/logstash
+      dockerfile: Dockerfile
+
+    platform: linux/arm64/v8
+    ports:
+      - "5044:5044"
+
+    networks:
+     - my-network
+
+    volumes:
+      - $HOME/app:/var/app
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:6.8.7
+    platform: linux/x86_64
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    environment:
+      SERVER_NAME: kibana.example.org
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - $HOME/app:/var/app
+    ports:
+      - "5601:5601"
+    networks:
+      - my-network
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+    networks:
+      - my-network
+
+  elasticsearch:
+    platform: linux/x86_64
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    environment:
+      - bootstrap.system_call_filter=false
+      - discovery.type=single-node
+      - transport.host=0.0.0.0
+      - validate_after_inactivity=0
+      - max_open_files=65536
+      - max_content_length_in_bytes=100000000
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+
+    volumes:
+      - ./data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - my-network
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=broker
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=broker:29092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+      - KAFKA_CLUSTERS_0_READONLY=true
+
+    networks:
+      - my-network
+
+  broker:
+    image: confluentinc/cp-kafka:latest
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT://broker:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      kafka.bootstrap.servers: broker:9092
+      GROUP_ID: group_id
+
+
+    networks:
+      - my-network
+
+  notificatin-service:
+    image: notification-service
+    build:
+      context: /Users/furkanozmen/Desktop/side-projects/notification-service
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+
+    depends_on:
+        - broker
+        - elasticsearch
+    environment:
+        - elasticsearch.host=elasticsearch:9200
+        - kafka.bootstrap.servers=broker:29092
+        - kafka.group.id=group_id
+        - kafka.consumer.enable.auto.commit=true
+        - kafka.consumer.auto.commit.interval.ms=1000
+        - kafka.consumer.auto.offset.reset=earliest
+        - kafka.consumer.max.poll.records=1
+    volumes:
+      - ./data:/usr/share/notification-service/data
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
+

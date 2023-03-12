@@ -25,6 +25,8 @@ public class KafkaConsumer {
 
 
     public ConsumerFactory<String, Object> consumerFactory() {
+        System.out.println( "KAFKA BOOTSTRAP SERVERS = " + bootstrapServers);
+        System.out.println( "KAFKA GROUP ID = " + groupId);
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);

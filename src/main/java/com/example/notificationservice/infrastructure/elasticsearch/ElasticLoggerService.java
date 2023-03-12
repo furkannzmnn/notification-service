@@ -22,7 +22,7 @@ public class ElasticLoggerService implements ElasticLogger {
         this.elasticsearchClient = elasticClient.getElasticSearchClient();
     }
 
-    public void insert(String log, String index) throws IOException {
+    private void insert(String log, String index) throws IOException {
         String timestamp = initTimestamp();
 
         XContentBuilder builder = XContentFactory.jsonBuilder();
