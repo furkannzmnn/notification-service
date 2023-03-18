@@ -45,17 +45,3 @@ public class SmsSearchOperation implements SearchOperation<List<SmsTemplate>> {
 
 
 }
-@RestController
-@RequestMapping("/log")
-class Controller {
-    private final SearchOperation<List<SmsTemplate>> smsSearchOperation;
-
-    public Controller(SearchOperation<List<SmsTemplate>> smsSearchOperation) {
-        this.smsSearchOperation = smsSearchOperation;
-    }
-
-    @GetMapping()
-    public List<SmsTemplate> searchSmsTemplate() {
-        return smsSearchOperation.search(new BaseQuery());
-    }
-}

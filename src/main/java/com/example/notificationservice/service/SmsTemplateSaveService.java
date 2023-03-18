@@ -1,6 +1,5 @@
 package com.example.notificationservice.service;
 
-import com.example.notificationservice.infrastructure.logging.Logger;
 import com.example.notificationservice.model.SmsTemplate;
 import com.example.notificationservice.repository.SmsRepository;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,7 @@ public class SmsTemplateSaveService {
 
         smsRepository.save(smsTemplate);
 
-        return new SmsCreateResponse<>(smsTemplate, true);
+        return new SmsCreateResponse<>(smsTemplate);
     }
 
     private static final class SmsCreateResponse<T> {
@@ -54,6 +53,10 @@ public class SmsTemplateSaveService {
         private SmsCreateResponse(T data, boolean isSuccess) {
             this.data = data;
             this.isSuccess = isSuccess;
+        }
+
+        public SmsCreateResponse(T data) {
+            this(data, true);
         }
 
         public T getData() {

@@ -11,7 +11,7 @@ import java.util.Map;
 public class AccountDeleteSmsService extends SmsTemplateService {
     @Override
     public String generateSms(Map<String, Object> data) {
-        final SmsTemplate smsTemplate = smsRepository.findByKey(SmsKeyName.USER_OTP_SMS.name()).orElseThrow(RuntimeException::new);
+        final SmsTemplate smsTemplate = smsRepository.findByKey(SmsKeyName.ACCOUNT_DELETE_SMS.name()).orElseThrow(RuntimeException::new);
         return formatSms(smsTemplate.getDescription(), data);
     }
 

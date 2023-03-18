@@ -29,7 +29,7 @@ public class SmsController {
     @PostMapping("/sms")
     public void sendSms() {
         final Map<String, Object> build = new SmsTemplateSort().firstName("John").lastName("Doe").build();
-        smsTemplateResolver.resolveSmsType(SmsKeyName.USER_OTP_SMS).sendSms("+84988888888", build);
+        smsTemplateResolver.resolveSmsType(SmsKeyName.ACCOUNT_DELETE_SMS).sendSms("+84988888888", build);
     }
 
     @GetMapping("/sms-create")
